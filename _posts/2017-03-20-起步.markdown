@@ -1,0 +1,15 @@
+---
+layout: post
+title:  "起步"
+date:   2017-03-20 19:58:52 +0800
+---
+临时写一个 `Main` 类, 此页面只是为了测试模板。
+
+{% highlight java %}
+public class Main {
+
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+    }
+}
+{% endhighlight %}
