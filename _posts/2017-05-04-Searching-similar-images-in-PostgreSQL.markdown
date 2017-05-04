@@ -1,4 +1,4 @@
-:information_source:Suppose you have installed postgre
+_*Suppose you have installed postgre*_
 ### Install imgsmlr
 ```sh
 $ sudo yum install -y gd-devel
@@ -101,6 +101,7 @@ test1=# insert into image(data) SELECT textsend(content) FROM http_get('http://l
 ```
 
 > References
+
 * https://wiki.postgresql.org/images/4/43/Pgcon_2013_similar_images.pdf
 * https://github.com/postgrespro/imgsmlr
 * https://github.com/pramsey/pgsql-http
