@@ -99,6 +99,25 @@ postgres=# \c test1
 test1=# 
 test1=# insert into image(data) SELECT textsend(content) FROM http_get('http://liugenxian.com/imgs/liugenxian_logo.png');
 ```
+#### New image
+```sql
+-- insert image
+insert into image(data) SELECT textsend(content) FROM http_get(#{imageUrl})
+-- insert pattern
+INSERT INTO pat(id,pattern,signature)
+    SELECT
+	id,
+	shuffle_pattern(pattern) AS pattern,
+	pattern2signature(pattern) AS signature
+    FROM (
+	SELECT
+	    id,
+	    jpeg2pattern(data) AS pattern
+	FROM
+	    image
+	WHERE id = #{imageID}
+    ) x
+```
 
 > References
 
