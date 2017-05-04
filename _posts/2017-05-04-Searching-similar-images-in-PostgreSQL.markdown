@@ -1,4 +1,4 @@
-_*Suppose you have installed postgre*_
+_Suppose you have installed postgre_
 ### Install imgsmlr
 ```sh
 $ sudo yum install -y gd-devel
