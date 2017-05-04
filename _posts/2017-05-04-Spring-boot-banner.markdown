@@ -1,4 +1,4 @@
-```
+```sh
   .   ____          _            __ _ _
  /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
 ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
@@ -21,7 +21,7 @@ How?
 Add a `banner.txt` file to your classpath.
 
 And run your application.
-```
+```sh
 
     PPPPPPPPP      ZZZZZZZZZZ       GGGGGGGGG
     PP      PP            ZZ       GG
