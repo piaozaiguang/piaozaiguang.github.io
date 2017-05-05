@@ -4,11 +4,11 @@
 #### Install & Configuration
 * http://hbase.apache.org/book.html
 
-#### 逻辑视图
+#### 逻辑数据结构
 ![hbase logical view](https://cloud.githubusercontent.com/assets/6111081/25735160/c99150a8-319b-11e7-8d33-7b68bb6d0c28.png)
------------
+#### 逻辑数据结构
 ![hbase data model](https://cloud.githubusercontent.com/assets/6111081/25735158/c329699e-319b-11e7-8552-783af9d8470e.jpg)
------------
+
 * Table
 * RowKey：数据的主键，分布，快速查找
 * Column Family：列的组合，列族独立分割存取
@@ -53,7 +53,7 @@ $ deleteall 'test', 'row1'
 
 #### 架构
 ![hbasearch](https://cloud.githubusercontent.com/assets/6111081/25735191/21191b08-319c-11e7-8082-27848f81ec10.jpg)
------------
+
 * HMaster
   * 管理HRegionServer，健康检查，负载均衡
   * 分配HRegion，Rebalance
@@ -85,12 +85,14 @@ $ deleteall 'test', 'row1'
 * Rowkey的设计
   * 避免单点热点，负载均衡
   * 有没有Rowkey范围查询的需求
+
 #### 二级索引(Secondary indexes)
 * Rowkey的不足
   * 一般HBase查询是通过Rowkey，那如果复合查询条件呢？能把复合查询条件都拼到Rowkey中？考虑业务的多样化，这不太现实！
 * 二级索引？
   * 其实HBase并不像RDBMS那样提供索引，一般采用第三方solution, 比如典型的索引列和Rowkey的映射方式:
 ![secondary index design](https://cloud.githubusercontent.com/assets/6111081/25735198/33ea196c-319c-11e7-8b9c-843496508d9f.png)
+
 ### Phoenix
 > A relational database layer for Apache HBase → [Official site](https://phoenix.apache.org/)
 * SQL Engine
@@ -101,12 +103,15 @@ $ deleteall 'test', 'row1'
 * Join
 * Grouping
 * More...
+
 #### Install
 1. Add the phoenix-[version]-server.jar to the classpath of all HBase region server and master.
 2. Restart HBase.
 3. Add the phoenix-[version]-client.jar to the classpath of any Phoenix client.
+
 #### SQL Client
 ![squirrel](https://cloud.githubusercontent.com/assets/6111081/25736147/b2f8d2ec-31a2-11e7-8b5f-13f59bcdab0b.png)
+
 #### 基本操作
 ```sql
 CREATE TABLE IF NOT EXISTS api_error_log (
@@ -126,8 +131,10 @@ UPSERT INTO TEST(NAME,ID) VALUES('foo',123);
   
 DELETE FROM TEST WHERE ID=123;
 ```
+
 #### Global indexes
 read heavy
+
 #### Local indexes
 write heavy
 
@@ -138,15 +145,20 @@ hbase-site.xml
   <value>org.apache.hadoop.hbase.regionserver.wal.IndexedWALEditCodec</value>
 </property>
 ```
-### 应用在项目中
+
+### 应用在公司项目中的经验
+
 #### Why HBase?
 * 不断增长的数据量 - Scale out
+
 #### Why Phoenix?
 * SQL/JDBC
 * 低延迟，实时性
 * 从RDBMS平移过来
+
 #### 存哪些数据？
 * 采用Hybrid方案，热数据还是存在RDBMS中，历史记录等冷数据存到HBase中
+
 ### 踩过的坑
 * salt (bucket)
   * 单点热点问题，建表时指定bucket数来预拆分
