@@ -67,7 +67,7 @@ select * from daily_view;
 
 ### Replication
 
-1. create a role on the primary with "REPLICATION" previledges.
+* create a role on the primary with "REPLICATION" previledges.
 
 ```sh
 [user@HOST1 ~]$ pipeline test_db
@@ -77,13 +77,13 @@ Type "help" for help.
 test_db=# CREATE ROLE replicator WITH LOGIN REPLICATION PASSWORD 'xxxxxx';
 ```
 
-2. add an entry for the standby to the "pg_hba.conf" file.
+* add an entry for the standby to the "pg_hba.conf" file.
 
 ```sh
 host    replication     replicator      192.168.1.2/32         md5
 ```
 
-3. set a few configuration parameters on the primary by either updating the "pipelinedb.conf" file.
+* set a few configuration parameters on the primary by either updating the "pipelinedb.conf" file.
 
 ```sh
 wal_level = hot_standby
@@ -92,7 +92,7 @@ max_replication_slots = 1
 max_wal_senders = 2 
 ```
 
-4. create a replication slot for the standby.
+* create a replication slot for the standby.
 
 ```sh
 [user@HOST1 ~]$ pipeline test_db
@@ -104,13 +104,13 @@ test_db=# SELECT * FROM pg_create_physical_replication_slot('replicator_slot');
 
 **This is all the setup work we need to do on the primary. Let’s move on to the standby now.**
 
-5. taking a base backup of the primary on the standby.
+* taking a base backup of the primary on the standby.
 
 ```sh
 [user@HOST1 ~]$ pipeline-basebackup -X stream -D /your/path/pipelinedb/data -h 192.168.1.2 -p 5432 -U replicator
 ```
 
-6. write a "recovery.conf" in the standby’s data directory.
+* write a "recovery.conf" in the standby’s data directory.
 
 ```sh
 standby_mode = 'on'
@@ -119,7 +119,7 @@ primary_conninfo = 'host=192.168.1.1 port=5432 user=replicator password=xxxxxx'
 recovery_target_timeline = 'latest'
 ```
 
-7. make sure, connect to the standby and confirm it’s in recovery mode.
+* make sure, connect to the standby and confirm it’s in recovery mode.
 
 ```sh
 [user@HOST1 ~]$ pipeline test_db
@@ -133,7 +133,7 @@ test_db=# SELECT pg_is_in_recovery();
 (1 row)
 ```
 
-8. retrieve a list of WAL sender processes via the "pg_stat_replication" view.
+* retrieve a list of WAL sender processes via the "pg_stat_replication" view.
 
 ```sh
 [user@HOST1 ~]$ pipeline test_db
