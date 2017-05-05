@@ -41,24 +41,6 @@ FROM daily_stream
 GROUP BY work_date,worker;
 ```
 
-#### pom.xml
-```xml
-<!-- PipelineDB是基于postgresql -->
-<dependency>
-    <groupId>postgresql</groupId>
-    <artifactId>postgresql</artifactId>
-    <version>9.2-1002.jdbc4</version>
-</dependency>
-```
-
-#### 配置数据源
-```
-pipeline.jdbc.driverClassName=org.postgresql.Driver
-pipeline.jdbc.url=jdbc:postgresql://127.0.0.1:5432/test_db
-pipeline.jdbc.username=yourname
-pipeline.jdbc.password=yourpasswd
-```
-
 #### Streaming
 ```sql
 INSERT INTO daily_stream (work_date, worker) VALUES (CURRENT_DATE, 'jhon');
@@ -84,7 +66,9 @@ select * from daily_view;
 你可以通过`\l+`命令查看它的占用空间，因为它只存结果数据，所以你会发现磁盘占用很少。
 
 ### Replication
+
 1. create a role on the primary with "REPLICATION" previledges.
+
 ```sh
 [user@HOST1 ~]$ pipeline test_db
 pipeline (9.5.3)
@@ -92,18 +76,24 @@ Type "help" for help.
  
 test_db=# CREATE ROLE replicator WITH LOGIN REPLICATION PASSWORD 'xxxxxx';
 ```
+
 2. add an entry for the standby to the "pg_hba.conf" file.
+
 ```sh
 host    replication     replicator      192.168.1.2/32         md5
 ```
+
 3. set a few configuration parameters on the primary by either updating the "pipelinedb.conf" file.
+
 ```sh
 wal_level = hot_standby
 hot_standby = on
 max_replication_slots = 1
 max_wal_senders = 2 
 ```
+
 4. create a replication slot for the standby.
+
 ```sh
 [user@HOST1 ~]$ pipeline test_db
 pipeline (9.5.3)
@@ -111,20 +101,26 @@ Type "help" for help.
  
 test_db=# SELECT * FROM pg_create_physical_replication_slot('replicator_slot');
 ```
+
 **This is all the setup work we need to do on the primary. Let’s move on to the standby now.**
 
 5. taking a base backup of the primary on the standby.
+
 ```sh
 [user@HOST1 ~]$ pipeline-basebackup -X stream -D /your/path/pipelinedb/data -h 192.168.1.2 -p 5432 -U replicator
 ```
+
 6. write a "recovery.conf" in the standby’s data directory.
+
 ```sh
 standby_mode = 'on'
 primary_slot_name = 'replicator_slot'
 primary_conninfo = 'host=192.168.1.1 port=5432 user=replicator password=xxxxxx'
 recovery_target_timeline = 'latest'
 ```
+
 7. make sure, connect to the standby and confirm it’s in recovery mode.
+
 ```sh
 [user@HOST1 ~]$ pipeline test_db
 pipeline (9.5.3)
@@ -136,7 +132,9 @@ test_db=# SELECT pg_is_in_recovery();
  t
 (1 row)
 ```
+
 8. retrieve a list of WAL sender processes via the "pg_stat_replication" view.
+
 ```sh
 [user@HOST1 ~]$ pipeline test_db
 pipeline (9.5.3)
