@@ -1,6 +1,6 @@
 ![similar_test](https://cloud.githubusercontent.com/assets/6111081/25706089/ff0d0bc6-3111-11e7-9636-e9de1ac9095b.png)
 
-_Suppose you have installed postgre_
+_Suppose you have installed [postgre](https://piaozaiguang.github.io/2017/05/04/install-postgresql-on-centos.html)_
 ### Install imgsmlr
 ```sh
 $ sudo yum install -y gd-devel
