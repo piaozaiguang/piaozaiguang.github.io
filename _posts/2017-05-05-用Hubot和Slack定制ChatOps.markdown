@@ -133,13 +133,12 @@ cp -R node_modules/hubot-script-shellcmd/bash ./
 
 ```sh
 $ sh mybot.sh
-mybot> mybot shellcmd update
+mybot> mybot shellcmd helloworld
 ```
 
 ### Additional
 
 * Alias from `shellcmd` to `run`
   * open file `mybot.sh` and add row `export HUBOT_SHELLCMD_KEYWORD=run`
-  * restart
 * keep online
   * use module `forever`
