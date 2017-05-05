@@ -90,7 +90,8 @@ $ deleteall 'test', 'row1'
 * Rowkey的不足
   * 一般HBase查询是通过Rowkey，那如果复合查询条件呢？能把复合查询条件都拼到Rowkey中？考虑业务的多样化，这不太现实！
 * 二级索引？
-  * 其实HBase并不像RDBMS那样提供索引，一般采用第三方solution, 比如典型的索引列和Rowkey的映射方式:
+  * 其实HBase并不像RDBMS那样提供索引，一般采用第三方solution
+  * 比如典型的索引列和Rowkey的映射方式:
 ![secondary index design](https://cloud.githubusercontent.com/assets/6111081/25735198/33ea196c-319c-11e7-8b9c-843496508d9f.png)
 
 ### Phoenix
