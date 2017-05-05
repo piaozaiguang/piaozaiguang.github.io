@@ -19,11 +19,11 @@ _适用环境：CentOS_
 ### Make directory
 ```sh
 $ cd ~
-$ mkdir hogebot
-$ cd hogebot
+$ mkdir mybot
+$ cd mybot
 ```
 
-### generate bot
+### Generate bot
 ```sh
 $ yo hubot
 ? ==========================================================================
@@ -76,3 +76,70 @@ More info: https://github.com/yeoman/insight & http://yeoman.io
             \//      |xx|                            
 
 ```
+_Note:_ `Bot adapter: slack`
+
+### Remove unuse script
+
+* Open file `external-scripts.json` and delete row about `heroku`, `redis`
+* Remove file `hubot-scripts.json`
+
+### Run it
+```sh
+$ ./bin/hubot
+```
+
+### Test
+```sh
+mybot> mybot help
+mybot> mybot ping
+```
+
+Press `ctrl+c` to quit.
+
+### Integration for slack
+* Access `https://your-team.slack.com/apps/search?q=hubot` and add hubot app
+* Copy token and save setting
+
+### Make startup script
+```sh
+$ vi mybot.sh
+```
+
+```sh
+#!/bin/bash
+export HUBOT_SLACK_TOKEN=xoxb-Your-token
+./bin/hubot --adapter slack &
+```
+
+* Run `mybot.sh`
+* Invite `mybot` from your slack channel `#general`
+* Typing `mybot ping` in your slack channel `#general`
+* May be `mybot` response `PONG`.
+
+### Let hubot execute shell script
+
+* install hubot-script-shellcmd
+
+```sh
+npm install hubot-script-shellcmd
+cp -R node_modules/hubot-script-shellcmd/bash ./
+```
+
+* Open file `external-scripts.json` and add row `hubot-script-shellcmd`
+
+* Customize your shell in directory `bash/handlers`, `helloworld` and `update` is sample.
+
+* Run `mybot.sh` and try it.
+
+```sh
+$ sh mybot.sh
+mybot> mybot shellcmd update
+```
+
+### Additional
+
+* Alias from `shellcmd` to `run`
+  * open file `mybot.sh` and add row `export HUBOT_SHELLCMD_KEYWORD=run`
+  * restart
+* keep online
+  * use module `forever`
