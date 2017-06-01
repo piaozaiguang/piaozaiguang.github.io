@@ -16,6 +16,9 @@ _It's so cooooool_
 
 _Try it !_
 
+> Banner generator
+* http://patorjk.com/software/taag/#p=display&f=3D-ASCII&t=Test
+
 > References
 
 * https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-spring-application.html#boot-features-banner
