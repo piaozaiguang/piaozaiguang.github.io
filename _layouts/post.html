@@ -16,3 +16,17 @@ layout: default
     {% include disqus_comments.html %}
   {% endif %}
 </article>
+<div id="container"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+  var gitment = new Gitment({
+    owner: 'piaozaiguang',
+    repo: 'piaozaiguang.github.io',
+    oauth: {
+      client_id: '6a4339f69e072a22f654',
+      client_secret: '33996529be13640464665dab7c882b2c0eaacded',
+    },
+  })
+  gitment.render('container')
+</script>
