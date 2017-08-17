@@ -141,4 +141,7 @@ mybot> mybot shellcmd helloworld
 * Alias from `shellcmd` to `run`
   * open file `mybot.sh` and add row `export HUBOT_SHELLCMD_KEYWORD=run`
 * keep online
-  * use module `forever`
+  * `cd mybot` and `npm install --save forever`
+  * `vi mybot/bin/hubot`
+  * modify line `exec node_modules/.bin/hubot --name "mybot" "$@"` change to `forever start -c coffee node_modules/.bin/hubot --name "mybot" "$@"`
+  * restart mybot
