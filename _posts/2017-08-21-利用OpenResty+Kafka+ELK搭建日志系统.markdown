@@ -56,5 +56,124 @@ make install
 ```
 
 ## lua-resty-kafka
-一个
-## lua-resty
+一个OpenResty的Kafka Client
+下载地址：https://github.com/doujiang24/lua-resty-kafka
+lib下的resty/kafka整个拷贝到/usr/local/openresty/{Version}/lualib/下
+
+## nginx.conf
+
+```
+cd /usr/local/openresty/nginx/conf
+vi nginx.conf
+```
+
+```
+user  root;
+worker_processes  4;
+
+error_log  logs/error.log;
+error_log  logs/error.log  notice;
+error_log  logs/error.log  info;
+
+pid        logs/nginx.pid;
+
+events {
+    use epoll;
+    worker_connections  65535;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    access_log off;
+    underscores_in_headers on;
+    client_header_buffer_size 32k;
+    large_client_header_buffers 4 64k;
+    client_body_buffer_size 512k;
+    client_max_body_size 50m;
+
+    proxy_buffer_size  32k;
+    proxy_buffers      4 512k;
+    proxy_busy_buffers_size 1024k;
+    proxy_temp_file_write_size 1024k;
+
+    server_tokens   off;
+    sendfile        on;
+    tcp_nopush     on;
+    keepalive_timeout  300;
+    tcp_nodelay on;
+
+    gzip on;
+    gzip_min_length 1k;
+    gzip_buffers 16 64k;
+    gzip_http_version 1.1;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css text/xml application/xml application/atom+xml application/rss+xml application/xhtml+xml application/xml-dtd image/gif image/jpeg image/png image/x-icon image/bmp image/jpg image/x-ms-bmp text/javascript application/x-javascript application/javascript;
+    gzip_vary on;
+
+    upstream apps {
+        keepalive 80;
+        server 192.168.1.20:8080;
+        server 192.168.1.21:8080;
+    }
+
+    # 引用Kafka Client
+    lua_package_path "/usr/local/openresty/1.11.2.3/lualib/kafka/?.lua;;";
+
+    server {
+        listen       80;
+        server_name  your-domain.com;
+        index index.html index.htm index.jsp;
+        root html;
+        location / {
+            proxy_next_upstream http_502 http_504 http_404 error invalid_header;
+            proxy_pass http://apps;
+            proxy_http_version 1.1;
+            proxy_redirect off;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            #proxy_set_header Connection "";
+            proxy_set_header X-real-ip $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            
+            # 编辑消息体并发送到kafka集群
+            log_by_lua '
+                local cjson = require "cjson"
+                local producer = require "resty.kafka.producer"
+                local broker_list = {
+                  { host = "192.168.1.150", port = 9092 },
+                  { host = "192.168.1.151", port = 9092 },
+                  { host = "192.168.1.152", port = 9092 },
+                }
+                local log_json = {}
+                log_json["uri"]=ngx.var.uri
+                log_json["args"]=ngx.var.args
+                log_json["host"]=ngx.var.host
+                log_json["cookie"]=ngx.var.http_cookie
+                log_json["method"]=ngx.var.request_method
+                log_json["request_body"]=ngx.var.request_body
+                log_json["remote_addr"] = ngx.var.remote_addr
+                log_json["remote_user"] = ngx.var.remote_user
+                log_json["time_local"] = ngx.var.time_local
+                log_json["status"] = ngx.var.status
+                log_json["body_bytes_sent"] = ngx.var.body_bytes_sent
+                log_json["http_referer"] = ngx.var.http_referer
+                log_json["http_user_agent"] = ngx.var.http_user_agent
+                log_json["http_x_forwarded_for"] = ngx.var.http_x_forwarded_for
+                log_json["upstream_response_time"] = ngx.var.upstream_response_time
+                log_json["http_current_user"] = ngx.var.upstream_http_x_current_user
+                log_json["request_time"] = ngx.var.request_time
+                local message = cjson.encode(log_json);
+                local bp = producer:new(broker_list, { producer_type = "async" })
+                local ok, err = bp:send("accesslog", nil, message)
+                if not ok then
+                    ngx.log(ngx.ERR, "kafka send err:", err)
+                    return
+                end
+            ';
+        }
+    }
+}
+```
