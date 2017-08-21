@@ -33,6 +33,12 @@ Kibana：Elasticsearch的可视化平台
 - Kafka的Consumer Group异步处理log队列
 - 基于log内容编辑数据并存到Elasticsearch中
 
+## 安装Kafka
+
+https://kafka.apache.org/quickstart
+
+编辑中...
+
 ## 安装OpenResty
 下载最新的源码：https://openresty.org/cn/download.html
 ```sh
@@ -58,7 +64,8 @@ make install
 ## lua-resty-kafka
 一个OpenResty的Kafka Client
 下载地址：https://github.com/doujiang24/lua-resty-kafka
-lib下的resty/kafka整个拷贝到/usr/local/openresty/{Version}/lualib/下
+
+lib下的resty/kafka整个拷贝到/usr/local/openresty/lualib/下
 
 ## nginx.conf
 
@@ -177,3 +184,17 @@ http {
     }
 }
 ```
+
+## 安装Elasticsearch
+https://www.elastic.co/downloads/elasticsearch
+
+编辑中...
+
+## Kafka Consumer
+
+编辑中...
+
+## 安装Kibana
+https://www.elastic.co/downloads/kibana
+
+编辑中...
