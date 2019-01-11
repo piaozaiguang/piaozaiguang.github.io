@@ -1,0 +1,25 @@
+## Gource官网
+https://gource.io/
+
+## Install gource
+```sh
+#Mac os
+$brew install gource
+```
+
+## Use gource
+```sh
+cd {your_project_dir}
+$gource -o test-project.ppm
+```
+
+## Save as video
+### Install ffmpeg
+```sh
+$brew install ffmpeg
+```
+
+### Use ffmpeg & Save as mp4
+```sh
+$ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i test-project.ppm -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 test-project.mp4
+```
